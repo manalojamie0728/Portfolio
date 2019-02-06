@@ -19,7 +19,7 @@ Rules:  The player can move in five different ways, four of which are
                     21415, etc. If 0 is the last digit, keep shifting
                     until the first digit is non-zero.
 
-Matrix Generation:
+Matrix Generation (Prototype):
         Given a matrix with 4 rows (mathematical operations) and k-columns,
         fill the rule matrix as follows (in order):
 
@@ -32,6 +32,10 @@ Matrix Generation:
                 and fill in the blank (wrap around if necessary). If slot
                 is occupied, move downward until space is blank.
         'L':    Start from [3,0]. Fill in the remaining blanks.
+
+Matrix Generation (New):
+        Given a matrix with 4 rows (mathematical operations) and k-columns,
+        fill the rule matrix according to the 4x4 magic square.
 
 Math Operations:
     0: Addition; Add current digit with the digit's position
@@ -64,13 +68,14 @@ import random
 class Master:
     def __init__(self, k): # k is how many digits needed; 2 <= k <= 9
         self.k = k
-        self.directions = ['U', 'D', 'R', 'L']
+        self.directions = ['U', 'R', 'D', 'L']
         self.rules = np.empty([4, self.k], dtype=str)
         self.goal = self.generate_goal()
 
         self.build_rules()
 
-    def build_rules(self):
+    """
+    def build_rules0(self):
         # Fill the matrix in this order: U, D, R, L
         row, col = 0, 0 # row and col are anchors
         for d in range(4): # d is directional number
@@ -107,6 +112,36 @@ class Master:
                         break
                     while self.rules[row, col] in self.directions:
                         row = (row+1) % 4
+    """
+
+    def build_rules(self):
+        # Fill the matrix in this order: U, R, D, L
+        row, col = 0, 0 # row and col are anchors
+        for d in range(4): # d is directional number
+            row, col = d, 0
+            while col < self.k:
+                if d == 0:
+                    self.rules[row, col] = 'U'
+                    col += 1
+                    row = (row+(4-col)) % 4   # Modulo for wrap-around
+
+                elif d == 1:
+                    self.rules[row, col] = 'R'
+                    col += 1
+                    row = (row+(col)) % 4
+
+                elif d == 2:
+                    self.rules[row, col] = 'D'
+                    col += 1
+                    row = (row+(4-col)) % 4
+
+                elif d == 3:
+                    self.rules[row, col] = 'L'
+                    col += 1
+                    row = (row+(col)) % 4
+
+                if col%4 == 0:
+                    row = (row+2) % 4
 
     def generate_number(self):
         n = ''
@@ -126,10 +161,10 @@ class Master:
         return False
 
     def parse_direction(self, d): # d is a direction: U, D, R, L
-        d_dict = {'U': '1234',
-                  'D': '2441',
-                  'R': '3112',
-                  'L': '4323'} # Based on the current set of rules
+        d_dict = {'U': '1423',
+                  'R': '2314',
+                  'D': '3241',
+                  'L': '4132'} # Based on the current set of rules
         p = '' # Parse string to determine operation per digit
         for i in range(self.k):
             p += d_dict[d][i%4]
@@ -158,9 +193,31 @@ class Master:
                     digit += 1
                 n += str(digit)
             n = int(n)
+        else:
+            print("\nERROR! Input not recognized.\n")
         return n
 
 M = Master(5)
+
+# START GAME HERE
+n = M.generate_goal()
+while (M.check_goal(n)):
+    n = M.generate_number()
+
+while (not M.check_goal(n)):
+    print("================ ONE-WAY WOODS (OWW) ================")
+    print("DECIDE WHAT TO DO:\n[U] Go Up/Forward\n[D] Go Down/Back\n[L] Go Left\n[R] Go Right\n[-] Wait\n[Q] Quit\n")
+    print("Current Position: "+str(n))
+    i = raw_input("Choice: ")
+    if (i.upper() == 'Q'):
+        break
+    else:
+        n = M.move(i.upper(), n)
+
+if M.check_goal(n):
+    print("\n************ CONGRATULATIONS! YOU GOT OUT ALIVE! ************")
+else:
+    print("\nGood night...")
 
 """
 OBSERVATIONS:
@@ -168,6 +225,6 @@ OBSERVATIONS:
   1, 5, 9, etc. have the same values. In general, if there i rows and j
   columns, then j, i+j, 2i+j, ... have the same column compositions.
 - Some nodes are two-way; that is, they are inverses of each other. Most nodes
-  are one-way as expected of One-Way Woods
+  are one-way as expected of One-Way Woods.
 
 """
