@@ -204,9 +204,10 @@ n = M.generate_goal()
 while (M.check_goal(n)):
     n = M.generate_number()
 
+name = raw_input("Tell me your name: ")
 while (not M.check_goal(n)):
-    print("================ ONE-WAY WOODS (OWW) ================")
-    print("DECIDE WHAT TO DO:\n[U] Go Up/Forward\n[D] Go Down/Back\n[L] Go Left\n[R] Go Right\n[-] Wait\n[Q] Quit\n")
+    print("\n================ ONE-WAY WOODS (OWW) ================")
+    print(name+", what do you want to do:\n[U] Go Up/Forward\n[D] Go Down/Back\n[L] Go Left\n[R] Go Right\n[-] Wait\n[Q] Quit\n")
     print("Current Position: "+str(n))
     i = raw_input("Choice: ")
     if (i.upper() == 'Q'):
@@ -215,7 +216,8 @@ while (not M.check_goal(n)):
         n = M.move(i.upper(), n)
 
 if M.check_goal(n):
-    print("\n************ CONGRATULATIONS! YOU GOT OUT ALIVE! ************")
+    print("\nCurrent Position: "+str(n))
+    print("************ CONGRATULATIONS! YOU GOT OUT ALIVE! ************")
 else:
     print("\nGood night...")
 
