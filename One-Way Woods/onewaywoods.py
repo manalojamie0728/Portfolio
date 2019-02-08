@@ -63,11 +63,10 @@ Methods:
 """
 
 import numpy as np
-import random
 from master import Master
 from solver import Solver
 
-k = 4
+k = 5
 M = Master(k)
 
 # START GAME HERE
@@ -79,14 +78,17 @@ name = raw_input("Tell me your name: ")
 print("To get out, you must reach Position "+str(M.generate_goal()))
 while (not M.check_goal(n)):
     print("\n================ ONE-WAY WOODS (OWW) ================")
-    print(name+", what do you want to do:\n[U] Go Up/Forward\n[D] Go Down/Back\n[L] Go Left\n[R] Go Right\n[-] Wait\n[S] Show Me The Way\n[Q] Quit\n")
+    print(name+", what do you want to do?\nACT:\n[U] Go Up/Forward\n[D] Go Down/Back\n[L] Go Left\n[R] Go Right\n[-] Wait\n\nOTHER:\n[S] Show Me The Way\n[E] Exhaust Nodes\n[Q] Quit\n")
     print("Current Position: "+str(n))
     i = raw_input("Choice: ")
     if (i.upper() == 'Q'):
         break
     elif (i.upper() == 'S'):
         print("Yuu giving up? Ha! Weak...")
-        Solver(n, k).solve()
+        Solver(n, k).solve(True)
+        break
+    elif (i.upper() == 'E'):
+        Solver(n, k).exhaust_nodes()
         break
     else:
         n = M.move(i.upper(), n)

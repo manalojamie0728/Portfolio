@@ -5,8 +5,9 @@ from master import Master
 
 class Graph:
     def __init__(self, k):
-        # Pointers to root, and current nodes; initially None
+        # Pointers to root, and solution nodes; initially None
         self.root = None
+        self.solution = None
         self.M = Master(k)
 
         # List of values already visited and discovered
@@ -60,9 +61,7 @@ class Graph:
         self.visited.append(N.val)
         
         if self.M.check_goal(N.val):
-            print "\n***********************"
-            print len(self.visited), len(self.bfs_disc_val) 
-            print self.root.val, N.path, N.val, "\n***********************"
+            self.solution = N
             return True
         return False
 
@@ -74,6 +73,7 @@ class Graph:
         while len(self.bfs_queue) > 0:
             if(self.bfs_traversal(self.bfs_queue.pop(0))):
                 break
+        return self.solution
 
 class Node:
     def __init__(self, val, path=""):
