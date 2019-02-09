@@ -63,6 +63,7 @@ Methods:
 """
 
 import numpy as np
+import time
 from master import Master
 from solver import Solver
 
@@ -84,8 +85,10 @@ while (not M.check_goal(n)):
     if (i.upper() == 'Q'):
         break
     elif (i.upper() == 'S'):
-        print("Yuu giving up? Ha! Weak...")
+        print("You giving up? Ha! Weak...")
+        t0 = time.time()
         Solver(n, k).solve(True)
+        print "Time to solve:", time.time()-t0, "s"
         break
     elif (i.upper() == 'E'):
         Solver(n, k).exhaust_nodes()

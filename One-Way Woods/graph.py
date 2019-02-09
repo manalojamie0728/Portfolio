@@ -29,30 +29,35 @@ class Graph:
             if (n not in self.visited) and (n not in self.bfs_disc_val):
                 if d == 'U':
                     N.up = Node(n, N.path+d)
+                    N.up.prev = N.val
                     self.bfs_queue.append(N.up)
                     if self.M.check_goal(N.up.val):
                         N = N.up
                         break
                 elif d == 'R':
                     N.right = Node(n, N.path+d)
+                    N.right.prev = N.val
                     self.bfs_queue.append(N.right)
                     if self.M.check_goal(N.right.val):
                         N = N.right
                         break
                 elif d == 'D':
                     N.down = Node(n, N.path+d)
+                    N.down.prev = N.val
                     self.bfs_queue.append(N.down)
                     if self.M.check_goal(N.down.val):
                         N = N.down
                         break
                 elif d == 'L':
                     N.left = Node(n, N.path+d)
+                    N.left.prev = N.val
                     self.bfs_queue.append(N.left)
                     if self.M.check_goal(N.left.val):
                         N = N.left
                         break
                 elif d == '-':
                     N.wait = Node(n, N.path+d)
+                    N.wait.prev = N.val
                     self.bfs_queue.append(N.wait)
                     if self.M.check_goal(N.wait.val):
                         N = N.wait
@@ -84,6 +89,7 @@ class Node:
         self.left = None
         self.wait = None
 
-        # Current Node Value and Path
+        # Current and Previous Node Values and Path
+        self.prev = 0
         self.val = val
         self.path = path
